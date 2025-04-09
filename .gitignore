@@ -1,0 +1,10 @@
+# Ignore node_modules and build artifacts
+node_modules/
+dist/
+build/
+*.log
+
+# Ignore system-generated files
+.DS_Store
+Thumbs.db
+.env
