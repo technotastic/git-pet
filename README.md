@@ -109,6 +109,51 @@ Navigate to any Git repository and run commands:
 
 Installing hooks via `git-pet hooks install` places small scripts in your repository's `.git/hooks/` directory. These scripts automatically run the internal `git-pet react <event> [args]` command after certain Git actions (like commits or merges), allowing Git Pet to award EXP and potentially unlock achievements based on your workflow. The installation command automatically determines the correct path to the main `git-pet` script.
 
+## Resetting Your Pet
+
+If you want to start over with a completely new pet (resetting name, stats, level, EXP, and achievements back to defaults), you need to manually delete the global state file.
+
+The pet's data is stored at: `~/.config/git-pet/state.json`
+
+**To reset your pet:**
+
+1.  Open your terminal.
+2.  Run the command:
+    ```bash
+    rm ~/.config/git-pet/state.json
+    ```
+
+**Note:** Running `npm uninstall -g git-pet` removes the application, but **does not** remove this state file. The state file will be automatically recreated with defaults the next time you run a `git-pet` command after deleting it.
+
+## Completely Uninstalling Git Pet
+
+If you wish to remove Git Pet entirely from your system, including the command, all persistent data, and any installed repository hooks, follow these steps:
+
+1.  **Uninstall Hooks from Repositories:**
+    *   Git hooks are installed *per repository*. You need to uninstall them from each repository where you previously ran `git pet hooks install`.
+    *   **Method 1 (Recommended):** Navigate into each relevant repository directory in your terminal and run:
+        ```bash
+        git pet hooks uninstall
+        ```
+    *   **Method 2 (Manual):** Alternatively, you can manually delete the specific hook files created by Git Pet (commonly `post-commit`, `post-merge`, `pre-push`) from the `.git/hooks/` directory within each repository. Be careful not to delete other custom hooks you might have.
+
+2.  **Remove Global State and Configuration:**
+    *   This deletes your pet's persistent data (stats, level, achievements, etc.) and any custom configurations.
+    *   Run the following command in your terminal to remove the directory:
+        ```bash
+        rm -r ~/.config/git-pet/
+        ```
+        *(This removes both the `state.json` file and the containing directory).*
+
+3.  **Uninstall the Global Command:**
+    *   This removes the `git-pet` command itself from your system.
+    *   Run the following command in your terminal:
+        ```bash
+        npm uninstall -g git-pet
+        ```
+
+After completing these three steps, Git Pet should be fully removed from your system.
+
 ## Contributing
 
 Contributions, bug reports, and feature requests are welcome! Please feel free to open an Issue or Pull Request on the [GitHub repository](https://github.com/technotastic/git-pet).
