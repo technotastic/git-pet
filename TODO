@@ -1,0 +1,41 @@
+When you use this prompt next time, remember to provide the git-pet codebase (flattened to a single file) containing the complete source files. This will give the AI the correct starting point.
+
+Prompt for Future Session:
+
+"Hello! I want to continue working on my Node.js CLI project, Git Pet. The current full codebase is attached/provided below.
+
+Goal: Implement a persistent status bar using the Ink TUI library (https://github.com/vadimdemedes/ink).
+
+Current State: Git Pet is currently a collection of run-and-exit commands (git-pet status, feed, play, react, etc.). It has features like moods, stats (hunger/happiness), EXP/leveling, achievements, and uses Git hooks to trigger reactions via git-pet react. The pet state is stored globally.
+
+Requirements for the Ink UI:
+
+New Command: Create a new command, perhaps git-pet ui, that launches the persistent Ink interface.
+
+Long-Running Process: This command should start a process that takes over the terminal display and runs continuously until manually exited (e.g., Ctrl+C).
+
+Status Bar Component: Implement a fixed status bar component rendered at the bottom of the terminal.
+
+Status Bar Content: The status bar should display:
+
+The current pet mood represented by Kaomoji (e.g., ( ^▽^ ), ( T_T ), ( O_O )).
+
+Current Level and EXP (e.g., Lvl: 2 | EXP: 15/150).
+
+Current Hunger and Happiness stats.
+
+(Optional but nice: Current Git repository name and branch).
+
+Periodic Updates: The running Ink application needs to:
+
+Periodically (e.g., every few seconds) fetch the current Git repository state (getRepoState).
+
+Calculate pet stat decay (updatePetStats).
+
+Determine the current mood (determineCurrentMood).
+
+Update the application's state and re-render the status bar with the latest information.
+
+Dependencies: Add ink and react as project dependencies.
+
+Request: Please provide the necessary code modifications and any new files required to implement this working Ink UI mode for Git Pet."

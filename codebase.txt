@@ -1,0 +1,2083 @@
+--- START FILE: bin/git-pet.js ---
+#!/usr/bin/env node
+
+// Removed debug log
+
+
+// Handle potential ES Module loading if needed
+// ...
+
+// Or for CommonJS:
+try {
+    require('../lib/cli.js');
+} catch (error) {
+     console.error("[ERROR bin/git-pet.js] Failed to load cli.js:", error);
+     process.exit(1);
+}
+--- END FILE: bin/git-pet.js ---
+
+--- START FILE: README.md ---
+# Git Pet 🐾
+
+[![License](https://img.shields.io/github/license/technotastic/git-pet)](https://github.com/technotastic/git-pet/blob/main/LICENSE)
+
+Your interactive Git repository Tamagotchi-inspired pet in the terminal! Watch your pet's mood change based on your Git activity, feed it, play with it, and level it up by being a productive developer.
+
+```
+--- gitty (happy) ---
+  .--.
+ / ^.^\\
+ \\ \\_/ /
+ /\\__/\\
+(_\\** /_)
+  "  "
+✨
+Mood: happy (New commit detected)
+Hunger: 85/100
+Happiness: 92/100
+Level: 2
+EXP:   15 / 150 [==------------------]
+```
+
+---
+
+## Features ✨
+
+*   **Visual Pet:** An ASCII art pet that lives in your terminal.
+*   **Mood Dynamics:** Pet's mood (happy, sad, stressed, bored, thinking) reflects your repository's state:
+    *   Uncommitted changes
+    *   Merge conflicts
+    *   Remote sync status (ahead/behind)
+    *   Commit frequency
+    *   Branch health (old branches)
+*   **Basic Needs:** Hunger and Happiness stats decay over time.
+*   **Interaction:** `feed` and `play` with your pet to keep it happy. Give it a `name`!
+*   **Leveling System:** Gain Experience Points (EXP) for performing Git actions like committing changes, merging branches, and pushing code.
+*   **Achievements:** Unlock achievements for Git milestones (first commit, first merge, reaching levels, etc.). 🏆
+*   **Hook Integration:** Install simple Git hooks (`post-commit`, `pre-push`, etc.) to make your pet react automatically to your actions and gain EXP.
+*   **Configuration:** Customize behavior like remote status checks via the `config` command.
+
+## Installation 🚀
+
+Make sure you have [Node.js](https://nodejs.org/) (v14 or later recommended) installed.
+
+Install Git Pet globally using npm:
+
+```bash
+npm install -g git-pet
+```
+
+This will install the `git-pet` command globally, making it available in any directory.
+
+## Usage 🔧
+
+Navigate to any Git repository and run commands:
+
+*   **Check Status (Default):**
+    ```bash
+    git-pet status
+    # Or simply:
+    git-pet
+    ```
+
+*   **Feed your Pet:**
+    ```bash
+    git-pet feed
+    ```
+
+*   **Play with your Pet:**
+    ```bash
+    git-pet play
+    ```
+
+*   **Name your Pet:**
+    ```bash
+    git-pet name GittyMcGitface
+    ```
+
+*   **View Detailed Summary:**
+    ```bash
+    git-pet summary
+    ```
+
+*   **List Unlocked Achievements:**
+    ```bash
+    git-pet achievements
+    ```
+
+*   **Configure Settings:**
+    ```bash
+    git-pet config list                       # See current config
+    git-pet config set checkRemoteStatus true # Enable remote checks
+    ```
+
+*   **Install Git Hooks (Recommended!):**
+    *   Run this *inside* your Git repository.
+    *   This enables automatic EXP gain and reactions.
+    ```bash
+    git-pet hooks install
+    # Use --force to overwrite existing hooks if needed
+    ```
+
+*   **Get Help:**
+    ```bash
+    git-pet --help
+    ```
+
+## Git Hooks
+
+Installing hooks via `git-pet hooks install` places small scripts in your repository's `.git/hooks/` directory. These scripts automatically run the internal `git-pet react <event> [args]` command after certain Git actions (like commits or merges), allowing Git Pet to award EXP and potentially unlock achievements based on your workflow. The installation command automatically determines the correct path to the main `git-pet` script.
+
+## Resetting Your Pet
+
+If you want to start over with a completely new pet (resetting name, stats, level, EXP, and achievements back to defaults), you need to manually delete the global state file.
+
+The pet's data is stored at: `~/.config/git-pet/state.json`
+
+**To reset your pet:**
+
+1.  Open your terminal.
+2.  Run the command:
+    ```bash
+    rm ~/.config/git-pet/state.json
+    ```
+
+**Note:** Running `npm uninstall -g git-pet` removes the application, but **does not** remove this state file. The state file will be automatically recreated with defaults the next time you run a `git-pet` command after deleting it.
+
+## Completely Uninstalling Git Pet
+
+If you wish to remove Git Pet entirely from your system, including the command, all persistent data, and any installed repository hooks, follow these steps:
+
+1.  **Uninstall Hooks from Repositories:**
+    *   Git hooks are installed *per repository*. You need to uninstall them from each repository where you previously ran `git pet hooks install`.
+    *   **Method 1 (Recommended):** Navigate into each relevant repository directory in your terminal and run:
+        ```bash
+        git pet hooks uninstall
+        ```
+    *   **Method 2 (Manual):** Alternatively, you can manually delete the specific hook files created by Git Pet (commonly `post-commit`, `post-merge`, `pre-push`) from the `.git/hooks/` directory within each repository. Be careful not to delete other custom hooks you might have.
+
+2.  **Remove Global State and Configuration:**
+    *   This deletes your pet's persistent data (stats, level, achievements, etc.) and any custom configurations.
+    *   Run the following command in your terminal to remove the directory:
+        ```bash
+        rm -r ~/.config/git-pet/
+        ```
+        *(This removes both the `state.json` file and the containing directory).*
+
+3.  **Uninstall the Global Command:**
+    *   This removes the `git-pet` command itself from your system.
+    *   Run the following command in your terminal:
+        ```bash
+        npm uninstall -g git-pet
+        ```
+
+After completing these three steps, Git Pet should be fully removed from your system.
+
+## Contributing
+
+Contributions, bug reports, and feature requests are welcome! Please feel free to open an Issue or Pull Request on the [GitHub repository](https://github.com/technotastic/git-pet).
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+*Happy coding, and take care of your Git Pet!*
+--- END FILE: README.md ---
+
+--- START FILE: TODO ---
+When you use this prompt next time, remember to provide the git-pet codebase (flattened to a single file) containing the complete source files. This will give the AI the correct starting point.
+
+Prompt for Future Session:
+
+"Hello! I want to continue working on my Node.js CLI project, Git Pet. The current full codebase is attached/provided below.
+
+Goal: Implement a persistent status bar using the Ink TUI library (https://github.com/vadimdemedes/ink).
+
+Current State: Git Pet is currently a collection of run-and-exit commands (git-pet status, feed, play, react, etc.). It has features like moods, stats (hunger/happiness), EXP/leveling, achievements, and uses Git hooks to trigger reactions via git-pet react. The pet state is stored globally.
+
+Requirements for the Ink UI:
+
+New Command: Create a new command, perhaps git-pet ui, that launches the persistent Ink interface.
+
+Long-Running Process: This command should start a process that takes over the terminal display and runs continuously until manually exited (e.g., Ctrl+C).
+
+Status Bar Component: Implement a fixed status bar component rendered at the bottom of the terminal.
+
+Status Bar Content: The status bar should display:
+
+The current pet mood represented by Kaomoji (e.g., ( ^▽^ ), ( T_T ), ( O_O )).
+
+Current Level and EXP (e.g., Lvl: 2 | EXP: 15/150).
+
+Current Hunger and Happiness stats.
+
+(Optional but nice: Current Git repository name and branch).
+
+Periodic Updates: The running Ink application needs to:
+
+Periodically (e.g., every few seconds) fetch the current Git repository state (getRepoState).
+
+Calculate pet stat decay (updatePetStats).
+
+Determine the current mood (determineCurrentMood).
+
+Update the application's state and re-render the status bar with the latest information.
+
+Dependencies: Add ink and react as project dependencies.
+
+Request: Please provide the necessary code modifications and any new files required to implement this working Ink UI mode for Git Pet."
+--- END FILE: TODO ---
+
+--- START FILE: codebase.txt ---
+--- END FILE: codebase.txt ---
+
+--- START FILE: package.json ---
+{
+  "name": "git-pet",
+  "version": "0.1.0",
+  "description": "Your interactive Git repository Tamagotchi in the terminal!",
+  "main": "lib/index.js",
+  "bin": {
+    "git-pet": "bin/git-pet.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "git",
+    "pet",
+    "tamagotchi",
+    "cli",
+    "fun",
+    "developer",
+    "tool",
+    "terminal"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "execa": "^5.1.1",
+    "fs-extra": "^11.1.1",
+    "moment": "^2.29.4",
+    "os": "^0.1.2",
+    "yargs": "^17.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/technotastic/git-pet.git"
+  },
+  "bugs": {
+    "url": "https://github.com/technotastic/git-pet/issues"
+  },
+  "homepage": "https://github.com/technotastic/git-pet#readme"
+}
+--- END FILE: package.json ---
+
+--- START FILE: lib/git.js ---
+// lib/git.js (Complete with config check)
+const execa = require('execa');
+const moment = require('moment');
+const chalk = require('chalk');
+const { loadState } = require('./state'); // <-- Import loadState
+
+// =======================================================
+// runGit, getBranchInfo, checkRemoteStatus functions
+// remain exactly the same as the previous complete version.
+// Ensure they are present here in your actual file.
+// (Pasting them again for absolute clarity)
+// =======================================================
+
+/**
+ * Runs a git command asynchronously and handles basic errors.
+ * @param {string[]} args - Array of arguments to pass to the git command.
+ * @returns {Promise<{error: string|null, output: string|null, stderr: string|null}>}
+ */
+async function runGit(args) {
+  try {
+    const { stdout, stderr, failed, exitCode } = await execa('git', args, { reject: false });
+    if (failed || exitCode !== 0) {
+        if (stderr?.includes('not a git repository')) {
+            return { error: 'Not currently in a Git repository.', output: null, stderr };
+        }
+        if (stderr?.includes('no upstream configured')) {
+            // Let checkRemoteStatus handle this case based on output
+        } else {
+            console.warn(chalk.yellow(`Git command 'git ${args.join(' ')}' failed (exit code ${exitCode}). Stderr:`));
+            console.warn(chalk.yellow(stderr || 'No stderr output.'));
+        }
+        const returnError = stderr?.includes('no upstream configured') ? null : `Git command failed: ${stderr}`;
+        return { error: returnError, output: stdout?.trim() ?? null, stderr: stderr?.trim() ?? null };
+    }
+    return { error: null, output: stdout.trim(), stderr: stderr.trim() };
+  } catch (error) {
+    console.error(chalk.red(`Critical error running git command 'git ${args.join(' ')}':`), error);
+    return { error: `Failed to execute git: ${error.message}`, output: null, stderr: null };
+  }
+}
+
+/**
+ * Gets information about local branches sorted by commit date.
+ * @returns {Promise<{error: string|null, branches: Array<{name: string, lastCommit: moment.Moment}>}>}
+ */
+async function getBranchInfo() {
+    const format = '%(refname:short)%09%(committerdate:unix)';
+    const branchResult = await runGit(['branch', '--list', '--format=' + format, '--sort=-committerdate']);
+    if (branchResult.error) {
+        return { error: branchResult.error, branches: [] };
+    }
+    if (!branchResult.output) {
+         return { error: null, branches: [] };
+    }
+    const branches = branchResult.output.split('\n')
+      .map(line => {
+        const parts = line.split('\t');
+        const name = parts[0]?.trim();
+        const timestampStr = parts[1]?.trim();
+        if (name && timestampStr && /^\d+$/.test(timestampStr)) {
+            return { name: name, lastCommit: moment.unix(parseInt(timestampStr, 10)) };
+        }
+        return null;
+    }).filter(Boolean);
+    return { error: null, branches };
+}
+
+/**
+ * Checks the ahead/behind status relative to the upstream branch after fetching.
+ * @returns {Promise<{error: string|null, ahead: number, behind: number}>}
+ */
+async function checkRemoteStatus() {
+    const fetchResult = await runGit(['remote', 'update']);
+    if (fetchResult.error && !fetchResult.stderr?.includes('no remote repositories configured') && !fetchResult.stderr?.includes('could not prune')) {
+        console.warn(chalk.yellow('Failed to run git remote update:'), fetchResult.stderr || fetchResult.error);
+        return { error: `Failed to update remote status: ${fetchResult.stderr || fetchResult.error}`, ahead: 0, behind: 0 };
+    } else if (fetchResult.stderr?.includes('no remote repositories configured')) {
+         return { error: null, ahead: 0, behind: 0 };
+    }
+
+    const statusResult = await runGit(['status', '-uno', '--branch']);
+    if (statusResult.error) {
+         if (statusResult.stderr?.includes('no upstream configured')) {
+             return { error: null, ahead: 0, behind: 0 };
+         }
+         return { error: statusResult.error, ahead: 0, behind: 0 };
+    }
+    if (!statusResult.output) {
+         return { error: 'Failed to get status output.', ahead: 0, behind: 0 };
+    }
+
+    let ahead = 0;
+    let behind = 0;
+    const aheadMatch = statusResult.output.match(/ahead (\d+)/);
+    if (aheadMatch) ahead = parseInt(aheadMatch[1], 10);
+    const behindMatch = statusResult.output.match(/behind (\d+)/);
+    if (behindMatch) behind = parseInt(behindMatch[1], 10);
+    return { error: null, ahead, behind };
+}
+
+
+// =======================================================
+// Updated getRepoState Function
+// =======================================================
+
+/**
+ * Gets the overall state of the current Git repository, respecting config.
+ * @returns {Promise<object>} Object containing various repo state properties.
+ */
+async function getRepoState() {
+  // --- Load configuration FIRST ---
+  let state;
+  let shouldCheckRemote = false; // Default to false
+  try {
+     state = await loadState();
+     // Check if remote check is explicitly enabled in config
+     shouldCheckRemote = state?.config?.checkRemoteStatus === true;
+     // console.log(chalk.dim(`Remote check status configured to: ${shouldCheckRemote}`)); // For debugging config load
+  } catch (loadError) {
+      console.error(chalk.red('Failed to load state for configuration check:'), loadError);
+      // Proceed with remote check disabled if state load fails
+      shouldCheckRemote = false;
+  }
+
+  // --- Check if it's a git repo and get root ---
+  const rootCheck = await runGit(['rev-parse', '--show-toplevel']);
+   if (rootCheck.error) {
+       return { isGitRepo: false, error: rootCheck.error };
+   }
+   const repoRootDir = rootCheck.output;
+
+  // --- Prepare list of promises to run ---
+  const promises = [
+    runGit(['status', '--porcelain']),           // Check for changes/conflicts
+    runGit(['log', '-1', '--format=%ct']),      // Get timestamp of last commit
+    runGit(['branch', '--show-current']),       // Get current branch name
+    // Conditionally add the remote check promise based on config
+    shouldCheckRemote
+        ? checkRemoteStatus()
+        : Promise.resolve({ error: null, ahead: 0, behind: 0 }), // Return default if disabled
+    getBranchInfo()                             // Get list of branches + commit dates
+  ];
+
+  // --- Execute promises in parallel ---
+  const results = await Promise.all(promises).catch(err => {
+       console.error(chalk.red('Critical error during parallel git calls:'), err);
+       return [ // Return default error structure matching promise order
+            {error: 'Parallel check failed'},
+            {error: 'Parallel check failed'},
+            {error: 'Parallel check failed'},
+            {error: 'Parallel check failed', ahead:0, behind:0},
+            {error: 'Parallel check failed', branches:[]}
+        ];
+   });
+
+    // --- Destructure results ---
+    // Note: Index 3 is now potentially the resolved default if remote check was off
+    const [statusResult, logResult, branchResult, remoteResult, branchListResult] = results;
+
+    // --- Parse Results (with null/error checks) ---
+    let hasUncommittedChanges = false;
+    let hasConflicts = false;
+    if (statusResult && !statusResult.error && statusResult.output != null) {
+        hasUncommittedChanges = statusResult.output.length > 0;
+        hasConflicts = statusResult.output.split('\n').some(line => line.startsWith('UU'));
+    }
+
+    let lastCommitTimestamp = null;
+    if (logResult && !logResult.error && logResult.output && /^\d+$/.test(logResult.output)) {
+      lastCommitTimestamp = moment.unix(parseInt(logResult.output, 10)).toISOString();
+    }
+
+    const currentBranch = (branchResult && !branchResult.error && branchResult.output) ? branchResult.output : 'detached HEAD';
+
+    // Combine potential errors (less likely for remoteResult if check disabled)
+    const combinedError = statusResult?.error || logResult?.error || branchResult?.error || remoteResult?.error || branchListResult?.error || null;
+
+
+    // --- Construct Final State Object ---
+    return {
+        isGitRepo: true,
+        repoRootDir,
+        hasUncommittedChanges,
+        hasConflicts,
+        lastCommitTimestamp,
+        currentBranch,
+        // Use the values from remoteResult, which will be {0,0} if check was skipped
+        aheadCount: remoteResult?.ahead || 0,
+        behindCount: remoteResult?.behind || 0,
+        branches: branchListResult?.branches || [],
+        error: combinedError
+    };
+}
+
+
+// Export the necessary functions
+module.exports = { getRepoState, runGit /* others potentially needed later */ };
+--- END FILE: lib/git.js ---
+
+--- START FILE: lib/cli.js ---
+// lib/cli.js (Cleaned)
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
+const chalk = require("chalk");
+
+// --- Import ALL command modules ---
+const statusCmd = require("./commands/status");
+const feedCmd = require("./commands/feed");
+const playCmd = require("./commands/play");
+const nameCmd = require("./commands/name");
+const hooksCmd = require("./commands/hooks");
+const configCmd = require("./commands/config");
+const summaryCmd = require("./commands/summary");
+const reactCmd = require("./commands/react");
+const achievementsCmd = require("./commands/achievements");
+
+// --- Prepare Args ---
+const argsForYargs = hideBin(process.argv);
+// Removed debug log
+
+// --- Configure Yargs ---
+try {
+  yargs(argsForYargs)
+    .command(statusCmd)
+    .command(feedCmd)
+    .command(playCmd)
+    .command(nameCmd)
+    .command(hooksCmd)
+    .command(configCmd)
+    .command(summaryCmd)
+    .command(reactCmd)
+    .command(achievementsCmd)
+    .demandCommand(
+      1,
+      chalk.yellow(
+        "Tip: Use `git-pet status` to see your pet, or `--help` for all commands."
+      )
+    )
+    .recommendCommands()
+    .help()
+    .alias("h", "help")
+    .version()
+    .alias("v", "version")
+    // Removed global .strict() - rely on command-specific strictness
+    .wrap(yargs().terminalWidth())
+    .epilogue(
+      `For more info or to report issues, visit: ${chalk.cyan(
+        "https://github.com/technotastic/git-pet"
+      )}`
+    ).argv;
+} catch (error) {
+  console.error(
+    "[ERROR lib/cli.js] Error during yargs setup or execution:",
+    error
+  );
+}
+--- END FILE: lib/cli.js ---
+
+--- START FILE: lib/commands/feed.js ---
+// lib/commands/feed.js
+const { loadState, saveState } = require('../state');
+const { updatePetStats } = require('../pet'); // Keep updatePetStats available if needed elsewhere
+const { getPetArt } = require('../art');
+const { determineCurrentMood } = require('../pet'); // Import if needed for Strategy 4 check
+const chalk = require('chalk');
+const moment = require('moment');
+
+// Use constants defined in pet.js if preferred, or redefine here for clarity
+const FEED_HUNGER_GAIN = 25; // Matched from pet.js
+const FEED_HAPPINESS_GAIN = 5;  // Matched from pet.js
+
+module.exports = {
+  command: 'feed',
+  describe: 'Feed your Git Pet',
+  handler: async (argv) => {
+    const state = await loadState();
+    const pet = state.globalPet;
+
+    // Optional: Apply decay first to get current state before applying gains
+    // updatePetStats(pet);
+
+    // Feed the pet - Use defined constants
+    pet.hunger = Math.min(100, pet.hunger + FEED_HUNGER_GAIN);
+    pet.happiness = Math.min(100, pet.happiness + FEED_HAPPINESS_GAIN);
+    pet.lastFed = moment().toISOString();
+
+    /* --- Optional Strategy 4: Decouple Mood ---
+       If you enable this, the pet's mood won't instantly become "happy" after feeding.
+       Instead, the *next* `git pet status` command will evaluate the new stats
+       (higher hunger/happiness) and determine the mood based on the main logic.
+       This can feel more realistic but less immediately rewarding.
+
+       To enable: Comment out the following line:
+    */
+    // pet.mood = 'happy'; // <-- Comment this out to decouple immediate mood change
+
+    /* --- End Optional Strategy 4 --- */
+
+
+    console.log(chalk.green(`${pet.name} enjoys the virtual snack!`));
+
+    // --- Mood Determination after Action ---
+    // If you *didn't* decouple mood above, pet.mood might be manually set to 'happy'.
+    // If you *did* decouple, you might want to run determineCurrentMood here to update
+    // the state object *before* saving and display the calculated mood.
+    // let moodToShow = pet.mood; // Use potentially manually set mood
+    // Alternatively, always recalculate:
+    // let moodToShow = await determineCurrentMood(state); // This recalculates based on new stats
+
+    // For now, we'll display based on pet.mood as it exists after the interaction logic above.
+    // If not decoupled, it shows 'happy'. If decoupled, it shows the PREVIOUS mood
+    // until the next status check OR until determineCurrentMood is called here.
+    let moodToShow = pet.mood;
+
+    // Let's explicitly recalculate mood right after the action if decoupling is intended conceptually
+    // If the line `pet.mood = 'happy'` is commented out above, uncomment the next line:
+    // moodToShow = await determineCurrentMood(state); // Recalculate mood NOW
+
+    console.log(getPetArt(moodToShow, pet.name));
+
+    // Display updated stats
+    console.log(chalk.yellow(`Hunger: ${pet.hunger}/100`));
+    console.log(chalk.green(`Happiness: ${pet.happiness}/100`));
+
+    // Save the state including updated stats and potentially updated mood
+    await saveState(state);
+  },
+};
+--- END FILE: lib/commands/feed.js ---
+
+--- START FILE: lib/commands/play.js ---
+// lib/commands/play.js
+const { loadState, saveState } = require('../state');
+const { updatePetStats } = require('../pet'); // Keep available if needed elsewhere
+const { getPetArt } = require('../art');
+const { determineCurrentMood } = require('../pet'); // Import if needed for Strategy 4 check
+const chalk = require('chalk');
+const moment = require('moment');
+
+// Use constants defined in pet.js if preferred, or redefine here
+const PLAY_HAPPINESS_GAIN = 20; // Matched from pet.js
+const PLAY_HUNGER_LOSS = 8;     // Matched from pet.js
+
+module.exports = {
+  command: 'play',
+  describe: 'Play with your Git Pet to boost happiness',
+  handler: async (argv) => {
+    const state = await loadState();
+    const pet = state.globalPet;
+
+    // Optional: Apply decay first
+    // updatePetStats(pet);
+
+    // Play with the pet - Use defined constants
+    pet.happiness = Math.min(100, pet.happiness + PLAY_HAPPINESS_GAIN);
+    pet.hunger = Math.max(0, pet.hunger - PLAY_HUNGER_LOSS); // Playing makes them hungry
+    pet.lastPlayed = moment().toISOString();
+
+    /* --- Optional Strategy 4: Decouple Mood ---
+       To enable: Comment out the following line:
+    */
+    // pet.mood = 'happy'; // <-- Comment this out to decouple immediate mood change
+
+    /* --- End Optional Strategy 4 --- */
+
+    console.log(chalk.cyanBright(`${pet.name} looks happy after playing!`));
+
+    // --- Mood Determination after Action ---
+    // Similar logic as in feed.js - display based on pet.mood state after interaction.
+    // Recalculate explicitly if the direct mood set above is commented out.
+    let moodToShow = pet.mood;
+    // If decoupling mood, uncomment the next line:
+    // moodToShow = await determineCurrentMood(state); // Recalculate mood NOW
+
+    console.log(getPetArt(moodToShow, pet.name));
+
+    // Display updated stats
+    console.log(chalk.yellow(`Hunger: ${pet.hunger}/100`));
+    console.log(chalk.green(`Happiness: ${pet.happiness}/100`));
+
+    // Save the state including updated stats and potentially updated mood
+    await saveState(state);
+  },
+};
+--- END FILE: lib/commands/play.js ---
+
+--- START FILE: lib/commands/name.js ---
+// lib/commands/name.js
+const { loadState, saveState } = require('../state');
+const chalk = require('chalk');
+
+module.exports = {
+  // Define command structure to accept a name argument
+  command: 'name <petname>',
+  describe: 'Give your Git Pet a name',
+  builder: (yargs) => {
+    // Define the positional argument 'petname'
+    yargs.positional('petname', {
+      describe: 'The new name for your Git Pet',
+      type: 'string',
+    });
+  },
+  handler: async (argv) => {
+    // argv.petname will contain the name provided by the user
+    const newName = argv.petname;
+
+    if (!newName || newName.length > 50) { // Basic validation
+        console.error(chalk.red('Please provide a valid name (1-50 characters).'));
+        return; // Exit if name is invalid
+    }
+
+    const state = await loadState();
+    const oldName = state.globalPet.name;
+    state.globalPet.name = newName; // Update the name in the state
+
+    await saveState(state);
+
+    console.log(chalk.green(`You renamed '${oldName}' to '${chalk.bold(newName)}'!`));
+  },
+};
+--- END FILE: lib/commands/name.js ---
+
+--- START FILE: lib/commands/config.js ---
+// lib/commands/config.js
+const { loadState, saveState } = require('../state'); // Assuming state.js exports these
+const chalk = require('chalk');
+
+module.exports = {
+  command: 'config <action> [key] [value]',
+  describe: 'View or set configuration options (e.g., checkRemoteStatus true/false)',
+  builder: (yargs) => {
+    yargs
+      .positional('action', {
+        describe: 'Action to perform',
+        type: 'string',
+        choices: ['set', 'get', 'list'], // Add list/get actions
+      })
+      .positional('key', {
+        describe: 'The configuration key to set/get (required for set/get)',
+        type: 'string',
+        // Add more valid keys here as config grows
+        choices: ['checkRemoteStatus'],
+      })
+      .positional('value', {
+        describe: 'The value to set the key to (required for set)',
+        // Type validation will happen in handler based on key
+      })
+      .check((argv) => {
+         // Add validation based on action
+         if (argv.action === 'set' && (typeof argv.key === 'undefined' || typeof argv.value === 'undefined')) {
+             throw new Error("Both <key> and <value> are required for 'set' action.");
+         }
+         if (argv.action === 'get' && typeof argv.key === 'undefined') {
+             throw new Error("<key> is required for 'get' action.");
+         }
+         return true;
+       });
+  },
+  handler: async (argv) => {
+    const state = await loadState();
+    // Ensure the config object exists in the state
+    if (!state.config) state.config = {};
+
+    switch (argv.action) {
+      case 'set':
+        const key = argv.key;
+        let value = argv.value;
+
+        // --- Add type validation/conversion based on key ---
+        if (key === 'checkRemoteStatus') {
+          // Convert string 'true'/'false' to boolean
+          if (typeof value === 'string') {
+             if (value.toLowerCase() === 'true') value = true;
+             else if (value.toLowerCase() === 'false') value = false;
+          }
+          // Validate type
+          if (typeof value !== 'boolean') {
+            console.error(chalk.red(`Invalid value for ${key}. Expected true or false.`));
+            return;
+          }
+          state.config[key] = value;
+          await saveState(state);
+          console.log(chalk.green(`Configuration updated: ${chalk.bold(key)} set to ${chalk.bold(value)}`));
+        } else {
+          // Handle other keys if added later
+          console.error(chalk.red(`Unknown configuration key: ${key}`));
+        }
+        break; // End case 'set'
+
+      case 'get':
+        if (state.config.hasOwnProperty(argv.key)) {
+           console.log(`${chalk.bold(argv.key)}: ${chalk.cyan(state.config[argv.key])}`);
+        } else {
+           console.log(`${chalk.bold(argv.key)} is not set (or using default).`);
+           // Optionally show default value here
+           if (argv.key === 'checkRemoteStatus') console.log(chalk.dim(`(Default is false)`))
+        }
+        break; // End case 'get'
+
+      case 'list':
+        console.log(chalk.cyan('--- Git Pet Configuration ---'));
+        if (Object.keys(state.config).length === 0) {
+            console.log(chalk.grey('(No specific configuration set)'));
+        } else {
+             for (const k in state.config) {
+                 console.log(`${chalk.bold(k)}: ${chalk.cyan(state.config[k])}`);
+             }
+        }
+        // Optionally list default values for known keys not present
+        if (typeof state.config.checkRemoteStatus === 'undefined') {
+            console.log(chalk.dim(`checkRemoteStatus: false (Default)`));
+        }
+        break; // End case 'list'
+    }
+  },
+};
+--- END FILE: lib/commands/config.js ---
+
+--- START FILE: lib/commands/status.js ---
+// lib/commands/status.js (Displays Level/EXP)
+const { loadState, saveState, getExpToNextLevel } = require('../state'); // Import helper
+const { determineCurrentMood } = require('../pet');
+const { getPetArt, getMoodFrameCount } = require('../art');
+const chalk = require('chalk');
+const moment = require('moment');
+
+module.exports = {
+  command: 'status',
+  aliases: ['$0'], // Default command
+  describe: 'Check the status and mood of your Git Pet',
+  handler: async (argv) => {
+    const state = await loadState();
+    const pet = state.globalPet;
+    const previousMood = pet.mood; // Store mood before determination
+
+    // Determine current mood object { mood, reason }
+    // This also runs updatePetStats internally now
+    const moodInfo = await determineCurrentMood(state);
+    const currentMood = moodInfo.mood; // Extract the mood string
+
+    // --- Animation Frame Logic ---
+    let currentFrame = pet.animationFrame || 0;
+    const frameCount = getMoodFrameCount(currentMood);
+
+    if (currentMood !== previousMood) {
+        currentFrame = 0; // Reset animation on mood change
+    } else if (frameCount > 1) {
+        // Advance frame if enough time has passed since last status check
+        const secondsSinceLastUpdate = moment().diff(moment(pet.lastStatusUpdate), 'seconds');
+        // Adjust timing sensitivity as needed (e.g., 0.5 seconds)
+        if (secondsSinceLastUpdate > 0.5) {
+             currentFrame = (currentFrame + 1) % frameCount;
+        }
+    }
+    // --- End Animation Frame Logic ---
+
+    // Display Pet Art and Core Stats
+    console.log(getPetArt(currentMood, pet.name, currentFrame));
+    console.log(chalk.magenta(`Mood: ${currentMood}`) + chalk.dim(` (${moodInfo.reason})`)); // Show reason dimmed
+    console.log(chalk.yellow(`Hunger: ${pet.hunger}/100`));
+    console.log(chalk.green(`Happiness: ${pet.happiness}/100`));
+
+    // --- Add Level/EXP Display ---
+    const expToNext = getExpToNextLevel(pet.level);
+    const progressBarLength = 20; // Width of the EXP bar
+    const progress = Math.min(1, pet.experience / expToNext); // Ensure progress doesn't exceed 1
+    const filledLength = Math.round(progressBarLength * progress);
+    const emptyLength = progressBarLength - filledLength;
+    const progressBar = `[${chalk.blueBright('='.repeat(filledLength))}${chalk.grey('-'.repeat(emptyLength))}]`;
+
+    console.log(chalk.blueBright(`Level: ${pet.level}`));
+    console.log(chalk.blueBright(`EXP:   ${pet.experience} / ${expToNext} ${progressBar}`));
+    // --- End Level/EXP Display ---
+
+    // Update state properties modified by this command
+    pet.animationFrame = currentFrame;
+    pet.lastStatusUpdate = moment().toISOString();
+    // Note: pet.mood, pet.hunger, pet.happiness etc. were potentially updated inside determineCurrentMood
+
+    // Save the potentially updated state
+    await saveState(state);
+  },
+};
+--- END FILE: lib/commands/status.js ---
+
+--- START FILE: lib/commands/summary.js ---
+// lib/commands/summary.js (Displays Level/EXP)
+const { loadState, saveState, getExpToNextLevel } = require('../state'); // Import helper
+const { determineCurrentMood, updatePetStats } = require('../pet');
+const { getRepoState } = require('../git');
+const chalk = require('chalk');
+const moment = require('moment');
+
+// Re-define or import constants if needed (ensure consistency with pet.js)
+const OLD_BRANCH_THRESHOLD_WEEKS = 2; // Example from git-pet.txt
+
+module.exports = {
+  command: 'summary',
+  describe: 'Show a summary of factors affecting Git Pet\'s current state',
+  handler: async (argv) => {
+    console.log(chalk.cyan.bold('--- Git Pet State Summary ---'));
+
+    const state = await loadState();
+    const pet = state.globalPet;
+    const config = state.config || {};
+
+    // Get repo state FIRST, as mood logic might depend on it
+    const repoState = await getRepoState();
+
+    // Apply decay based on last activity timestamps BEFORE determining mood
+    updatePetStats(pet);
+
+    // Determine mood AFTER decay and getting repo state
+    const moodInfo = await determineCurrentMood(state); // Uses potentially updated stats and repoState
+
+    // --- Display Pet Info ---
+    console.log(`\n${chalk.bold('Pet:')} ${chalk.cyan(pet.name)}`);
+    console.log(`${chalk.bold('Current Mood:')} ${chalk.magenta(moodInfo.mood)} (Reason: ${chalk.dim(moodInfo.reason || 'N/A')})`);
+    console.log(`${chalk.bold('Hunger:')} ${chalk.yellow(pet.hunger)}/100`);
+    console.log(`${chalk.bold('Happiness:')} ${chalk.green(pet.happiness)}/100`);
+
+    // --- Add Level/EXP Display ---
+    const expToNext = getExpToNextLevel(pet.level);
+    console.log(chalk.blueBright(`${chalk.bold('Level:')} ${pet.level}`));
+    console.log(chalk.blueBright(`${chalk.bold('EXP:')} ${pet.experience} / ${expToNext}`));
+    // --- End Level/EXP Display ---
+
+    // --- Display Timestamps ---
+    console.log(chalk.bold('\nRecent Activity:'));
+    console.log(`  Last Fed: ${pet.lastFed ? chalk.cyan(moment(pet.lastFed).fromNow()) : chalk.grey('Never')}`);
+    console.log(`  Last Played: ${pet.lastPlayed ? chalk.cyan(moment(pet.lastPlayed).fromNow()) : chalk.grey('Never')}`);
+    // Use lastCommitTimestamp from pet state (updated by react or determineMood)
+    console.log(`  Last Commit Seen: ${pet.lastCommitTimestamp ? chalk.cyan(moment(pet.lastCommitTimestamp).fromNow()) : chalk.grey('None')}`);
+    console.log(`  Pet Created: ${chalk.grey(moment(pet.createdAt).format('YYYY-MM-DD'))}`); // Optional
+
+    // --- Display Repository Factors ---
+    console.log(chalk.bold('\nRepository State:'));
+    if (!repoState.isGitRepo) {
+        console.log(chalk.yellow(`  ${repoState.error || 'Not currently in a Git repository.'}`)); // Show error if available
+    } else {
+        console.log(`  Repository Root: ${chalk.grey(repoState.repoRootDir)}`);
+        console.log(`  Current Branch: ${chalk.cyan(repoState.currentBranch)}`);
+        console.log(`  Uncommitted Changes: ${repoState.hasUncommittedChanges ? chalk.yellow('Yes') : chalk.green('No')}`);
+        console.log(`  Merge Conflicts: ${repoState.hasConflicts ? chalk.red('YES') : chalk.green('No')}`);
+
+        // Remote Status (conditional display)
+        const remoteCheckEnabled = config.checkRemoteStatus === true;
+        console.log(`  Remote Status Check: ${remoteCheckEnabled ? chalk.green('Enabled') : chalk.grey('Disabled')}`);
+        if (remoteCheckEnabled) {
+            console.log(`    Ahead of Remote: ${repoState.aheadCount > 0 ? chalk.yellow(repoState.aheadCount) : chalk.green(0)}`);
+            console.log(`    Behind Remote: ${repoState.behindCount > 0 ? chalk.red(repoState.behindCount) : chalk.green(0)}`);
+        } else if (!remoteCheckEnabled && (repoState.aheadCount > 0 || repoState.behindCount > 0)) {
+            // Handle edge case where remote check is disabled but git status still reports ahead/behind (e.g., no upstream set)
+             console.log(chalk.dim('    (Remote status may be outdated or upstream not configured)'));
+        } else if (!remoteCheckEnabled) {
+            console.log(chalk.dim('    (Enable via `git pet config set checkRemoteStatus true`)'));
+        }
+
+
+        // Branch Info
+         const oldBranchThreshold = moment().subtract(OLD_BRANCH_THRESHOLD_WEEKS, 'weeks');
+         const oldBranches = (repoState.branches || []).filter(b => // Add safety check for branches array
+             b.lastCommit.isBefore(oldBranchThreshold) &&
+             !['main', 'master', 'develop', 'HEAD'].includes(b.name) && // Common main branches
+             b.name !== repoState.currentBranch // Don't list current branch as old
+         );
+         console.log(`  Old Branches (> ${OLD_BRANCH_THRESHOLD_WEEKS} weeks): ${oldBranches.length > 0 ? chalk.yellow(oldBranches.length) : chalk.green(0)}`);
+         if (oldBranches.length > 0 && oldBranches.length <= 5) { // Show names of a few old branches
+              console.log(chalk.dim(`    (${oldBranches.slice(0, 5).map(b => b.name).join(', ')}${oldBranches.length > 5 ? ', ...' : ''})`));
+         }
+         // Display any general repo error found during getRepoState
+         if(repoState.error && repoState.error !== 'Not currently in a Git repository.') { // Avoid duplicate message
+             console.log(chalk.red(`  Repository Error Detected: ${repoState.error}`));
+         }
+    }
+
+    // Save state because stats/mood/timestamps might have been mutated by decay or mood determination
+    await saveState(state);
+
+    console.log(chalk.cyan.bold('\n--- End Summary ---'));
+  },
+};
+--- END FILE: lib/commands/summary.js ---
+
+--- START FILE: lib/commands/achievements.js ---
+// lib/commands/achievements.js
+const { loadState, levelingConfig } = require('../state'); // Need state and config
+const chalk = require('chalk');
+const moment = require('moment');
+
+// Define known achievements details (User-facing descriptions)
+// Keys MUST match achievement keys used in react.js and levelingConfig.rewards
+const knownAchievements = {
+    // --- Milestones ---
+    FIRST_COMMIT: { name: "First Commit!", description: "Made your first commit since Git Pet started watching." },
+    FIRST_MERGE: { name: "Merge Master!", description: "Successfully merged a branch for the first time." },
+    FIRST_CONFLICT_RESOLVED: { name: "Conflict Conqueror!", description: "Resolved your first merge conflict (based on hook info)." },
+    // --- Leveling ---
+    REACH_LEVEL_5: { name: "Level 5!", description: "Reached Level 5. Keep it up!" },
+    REACH_LEVEL_10: { name: "Level 10!", description: "Reached Level 10. Impressive!" },
+    // --- Actions (Add if you want specific achievements for actions beyond first) ---
+    // e.g., PUSH_MASTER: { name: "Push Master", description: "Pushed changes 10 times." }, // Requires tracking push count
+    // e.g., BRANCH_CLEANER: { name: "Branch Cleaner", description: "Cleaned up 5 old/merged branches." }, // Requires tracking clean count
+
+    // Add descriptions for all achievement keys defined in levelingConfig.rewards that are meant to be unlockable achievements
+};
+
+module.exports = {
+  command: 'achievements',
+  aliases: ['ach', 'awards', 'trophies'],
+  describe: 'List unlocked achievements and their dates',
+  handler: async (argv) => {
+    console.log(chalk.cyanBright.bold('--- Git Pet Achievements ---'));
+    const state = await loadState();
+
+    // Ensure achievements object exists and is an object
+    const unlocked = (typeof state.globalPet.achievements === 'object' && state.globalPet.achievements !== null)
+                     ? state.globalPet.achievements
+                     : {};
+    const unlockedKeys = Object.keys(unlocked);
+
+    if (unlockedKeys.length === 0) {
+        console.log(chalk.grey('\n(No achievements unlocked yet! Keep using Git!)'));
+    } else {
+        console.log(chalk.grey(`\nUnlocked ${unlockedKeys.length} achievement(s):\n`));
+
+        // Sort keys maybe? Alphabetical or by date? By date is harder as value is timestamp.
+        // unlockedKeys.sort((a, b) => moment(unlocked[a]).diff(moment(unlocked[b]))); // Sort by unlock time
+
+        unlockedKeys.forEach(key => {
+            const achievementInfo = knownAchievements[key];
+            const name = achievementInfo?.name || key.replace(/_/g, ' '); // Fallback name formatting
+            const description = achievementInfo?.description;
+            const timestamp = unlocked[key]; // Should be ISO string timestamp
+            const dateString = timestamp ? chalk.dim(` (Unlocked: ${moment(timestamp).format('YYYY-MM-DD HH:mm')})`) : '';
+            const bonusExp = levelingConfig.rewards[key]; // Get potential bonus EXP
+            const expString = (bonusExp && achievementInfo) // Only show EXP for defined achievements
+                              ? chalk.greenBright(` [+${bonusExp} EXP Bonus]`)
+                              : '';
+
+            console.log(`- ${chalk.yellowBright('🏆')} ${chalk.bold(name)}${expString}`);
+            if (description) {
+                 console.log(`    ${chalk.grey(description)}${dateString}`);
+            } else {
+                // If no description, show date on the main line
+                console.log(`    ${dateString}`);
+            }
+            console.log(''); // Add a blank line for separation
+        });
+    }
+    console.log(chalk.cyanBright.bold('--------------------------'));
+  },
+};
+--- END FILE: lib/commands/achievements.js ---
+
+--- START FILE: lib/commands/hooks.js ---
+// lib/commands/hooks.js (Cleaned Templates)
+const chalk = require("chalk");
+const path = require("path");
+const fs = require("fs-extra");
+const execa = require("execa");
+
+// Helper to find the .git directory reliably
+async function findGitDir() {
+  /* ... same as before ... */
+  try {
+    const { stdout } = await execa("git", ["rev-parse", "--git-dir"], {
+      reject: false,
+    });
+    if (stdout) {
+      const gitDir = stdout.trim();
+      return path.resolve(process.cwd(), gitDir);
+    }
+    const { stdout: rootDir } = await execa(
+      "git",
+      ["rev-parse", "--show-toplevel"],
+      { reject: false }
+    );
+    if (rootDir) {
+      return path.join(rootDir.trim(), ".git");
+    }
+    return null; // Not found
+  } catch (error) {
+    return null;
+  }
+}
+
+// --- Hook Script Templates (Cleaned) ---
+
+const PLACEHOLDER = "%%GIT_PET_SCRIPT_PATH%%";
+
+// v4 Cleaned: Uses placeholder, compares HEAD to HEAD~1, passes 'changes' string
+const postCommitHookContentTemplate = `#!/bin/sh
+# Git Pet post-commit hook script v4 (Path injected by install)
+
+PARENT=\$(git rev-parse --verify HEAD~1 2>/dev/null)
+CHANGES_DETECTED=true
+if [ -n "\$PARENT" ]; then
+    if git diff --quiet "\$PARENT" HEAD --; then
+        CHANGES_DETECTED=false
+    fi
+fi
+
+# Path to the git-pet script (injected by install command)
+GIT_PET_SCRIPT_PATH="${PLACEHOLDER}"
+
+if [ ! -f "\$GIT_PET_SCRIPT_PATH" ]; then
+    echo "[GitPet Hook ERROR] Cannot find git-pet script at: \$GIT_PET_SCRIPT_PATH" >&2
+    echo "[GitPet Hook ERROR] Try running 'git pet hooks install --force' again." >&2
+    exit 0
+fi
+
+if \$CHANGES_DETECTED; then
+    # Pass 'changes' as a simple string argument
+    node "\$GIT_PET_SCRIPT_PATH" react post-commit changes || true
+else
+    # No extra argument needed here
+    node "\$GIT_PET_SCRIPT_PATH" react post-commit || true
+fi
+
+exit 0
+`;
+
+// v3 Cleaned: Uses placeholder
+const postMergeHookContentTemplate = `#!/bin/sh
+# Git Pet post-merge hook script v3 (Path injected by install)
+
+WAS_CONFLICT_FLAG=""
+# Basic heuristic check (optional, can be removed if too unreliable)
+MERGE_COMMIT_MSG=\$(git log -1 --pretty=%B HEAD)
+if echo "\$MERGE_COMMIT_MSG" | grep -qiE 'conflict|conflicts|resolved'; then
+     # WAS_CONFLICT_FLAG="was-conflict" # Pass string if enabling
+     : # No-op placeholder
+fi
+
+GIT_PET_SCRIPT_PATH="${PLACEHOLDER}"
+
+if [ ! -f "\$GIT_PET_SCRIPT_PATH" ]; then
+    echo "[GitPet Hook ERROR] Cannot find git-pet script at: \$GIT_PET_SCRIPT_PATH" >&2
+    exit 0
+fi
+
+node "\$GIT_PET_SCRIPT_PATH" react post-merge \$WAS_CONFLICT_FLAG || true
+
+exit 0
+`;
+
+// v3 Cleaned: Uses placeholder
+const prePushHookContentTemplate = `#!/bin/sh
+# Git Pet pre-push hook script v3 (Path injected by install)
+
+GIT_PET_SCRIPT_PATH="${PLACEHOLDER}"
+
+if [ ! -f "\$GIT_PET_SCRIPT_PATH" ]; then
+    echo "[GitPet Hook ERROR] Cannot find git-pet script at: \$GIT_PET_SCRIPT_PATH" >&2
+    exit 0 # Allow push even if hook script path is wrong
+fi
+
+node "\$GIT_PET_SCRIPT_PATH" react pre-push || true
+
+exit 0 # Must exit 0 to allow the push
+`;
+
+module.exports = {
+  command: "hooks <action>",
+  describe: "Manage or show instructions for Git hooks",
+  builder: (yargs) => {
+    /* ... same as before ... */
+    yargs
+      .positional("action", {
+        describe: "Action to perform",
+        type: "string",
+        choices: [
+          "install",
+          "uninstall",
+          "install-instructions",
+          "uninstall-instructions",
+        ],
+      })
+      .option("force", {
+        alias: "f",
+        type: "boolean",
+        description: "Overwrite existing hooks during install",
+        default: false,
+      });
+  },
+  handler: async (argv) => {
+    /* ... same logic as before for finding path and installing/uninstalling ... */
+
+    const gitDir = await findGitDir();
+    if (!gitDir && (argv.action === "install" || argv.action === "uninstall")) {
+      console.error(
+        chalk.red(
+          "Error: Could not find .git directory. Are you in a Git repository?"
+        )
+      );
+      return;
+    }
+    const hooksDir = gitDir ? path.join(gitDir, "hooks") : ".git/hooks";
+
+    const hookTemplates = {
+      "post-commit": postCommitHookContentTemplate,
+      "post-merge": postMergeHookContentTemplate,
+      "pre-push": prePushHookContentTemplate,
+    };
+    const hookFileNames = Object.keys(hookTemplates);
+
+    let gitPetScriptPath = "";
+    try {
+      const scriptPath = path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "bin",
+        "git-pet.js"
+      );
+      if (await fs.pathExists(scriptPath)) {
+        gitPetScriptPath = scriptPath;
+      } else {
+        throw new Error(`Script not found at expected path: ${scriptPath}`);
+      }
+    } catch (err) {
+      console.error(
+        chalk.red(
+          "Error: Could not determine the path to the main git-pet.js script."
+        ),
+        err
+      );
+      if (argv.action === "install" || argv.action === "uninstall") {
+        return;
+      }
+    }
+
+    if (argv.action === "install") {
+      if (!gitPetScriptPath) return;
+      console.log(
+        chalk.cyan(`Attempting to install Git Pet hooks in: ${hooksDir}`)
+      );
+      try {
+        await fs.ensureDir(hooksDir);
+      } catch (err) {
+        /* error handling */
+        console.error(
+          chalk.red(`Error: Could not create hooks directory: ${hooksDir}`),
+          err
+        );
+        console.error(chalk.red("Please check permissions."));
+        return;
+      }
+      let installedAny = false;
+      for (const hookName in hookTemplates) {
+        const hookPath = path.join(hooksDir, hookName);
+        const templateContent = hookTemplates[hookName];
+        const finalContent = templateContent.replace(
+          PLACEHOLDER,
+          gitPetScriptPath
+        );
+        try {
+          if ((await fs.pathExists(hookPath)) && !argv.force) {
+            console.warn(
+              chalk.yellow(
+                `Hook already exists: ${hookName}. Use --force to overwrite.`
+              )
+            );
+            continue;
+          }
+          await fs.writeFile(hookPath, finalContent, { mode: 0o755 });
+          console.log(chalk.green(`Installed hook: ${hookName}`));
+          installedAny = true;
+        } catch (err) {
+          /* error handling */
+          console.error(chalk.red(`Failed to install hook ${hookName}:`), err);
+          console.error(chalk.red("Check file permissions."));
+        }
+      }
+      if (installedAny) {
+        console.log(
+          chalk.cyan("Installation process complete. Hooks are now active.")
+        );
+      } else {
+        console.log(
+          chalk.grey(
+            "No new hooks were installed (possibly due to existing hooks without --force)."
+          )
+        );
+      }
+    } else if (argv.action === "uninstall") {
+      /* ... same uninstall logic ... */
+      console.log(
+        chalk.cyan(`Attempting to uninstall Git Pet hooks from: ${hooksDir}`)
+      );
+      if (!(await fs.pathExists(hooksDir))) {
+        console.log(
+          chalk.grey("Hooks directory not found. Nothing to uninstall.")
+        );
+        return;
+      }
+      let uninstalledAny = false;
+      for (const hookName of hookFileNames) {
+        const hookPath = path.join(hooksDir, hookName);
+        try {
+          if (await fs.pathExists(hookPath)) {
+            const currentContent = await fs.readFile(hookPath, "utf-8");
+            // Check for marker comment
+            if (
+              currentContent.includes("# Git Pet post-") ||
+              currentContent.includes("# Git Pet pre-")
+            ) {
+              await fs.remove(hookPath);
+              console.log(chalk.green(`Removed hook: ${hookName}`));
+              uninstalledAny = true;
+            } else {
+              console.log(chalk.grey(`Skipping non-Git-Pet hook: ${hookName}`));
+            }
+          }
+        } catch (err) {
+          /* error handling */
+          console.error(chalk.red(`Error removing hook ${hookName}:`), err);
+          console.error(chalk.red("Check file permissions."));
+        }
+      }
+      if (uninstalledAny) {
+        console.log(chalk.cyan("Uninstallation complete."));
+      } else {
+        console.log(chalk.grey("No Git Pet managed hooks found to uninstall."));
+      }
+    } else if (argv.action === "install-instructions") {
+      /* ... same instruction logic ... */
+      const hookDirDisplay = chalk.yellow(hooksDir);
+      console.log(
+        chalk.cyan.bold("--- Git Pet Hook Installation (Manual) ---")
+      );
+      console.log(
+        `Run ${chalk.inverse(
+          " git pet hooks install "
+        )} to attempt automatic setup.`
+      );
+      console.log(
+        `Alternatively, manually create/edit the following files in ${hookDirDisplay}.`
+      );
+      console.log(
+        `Make sure each file is executable: ${chalk.yellow(
+          "chmod +x <hook_file_path>"
+        )}\n`
+      );
+      console.log(
+        chalk.yellow(
+          `If installing manually, you MUST replace '${PLACEHOLDER}' in the scripts below`
+        )
+      );
+      console.log(
+        chalk.yellow(
+          `with the correct absolute path to 'bin/git-pet.js' (likely: ${
+            gitPetScriptPath || "<Could not determine path>"
+          })\n`
+        )
+      );
+      console.log(chalk.bold(`1. ${hookDirDisplay}/post-commit`));
+      console.log(chalk.greenBright(postCommitHookContentTemplate));
+      console.log(chalk.dim("(Reacts after a commit)\n"));
+      console.log(chalk.bold(`2. ${hookDirDisplay}/post-merge`));
+      console.log(chalk.greenBright(postMergeHookContentTemplate));
+      console.log(chalk.dim("(Reacts after a merge)\n"));
+      console.log(chalk.bold(`3. ${hookDirDisplay}/pre-push`));
+      console.log(chalk.greenBright(prePushHookContentTemplate));
+      console.log(chalk.dim("(Reacts before a push attempt)\n"));
+      console.log(
+        chalk.yellow.bold(
+          "Warning: Manual installation WILL overwrite existing hooks. Back them up first!"
+        )
+      );
+    } else if (argv.action === "uninstall-instructions") {
+      /* ... same instruction logic ... */
+      const hookDirDisplay = chalk.yellow(hooksDir);
+      console.log(
+        chalk.cyan.bold("--- Git Pet Hook Uninstallation (Manual) ---")
+      );
+      console.log(
+        `Run ${chalk.inverse(
+          " git pet hooks uninstall "
+        )} to attempt automatic removal.`
+      );
+      console.log(
+        `Alternatively, manually delete the Git Pet hook files (e.g., post-commit, post-merge, pre-push)`
+      );
+      console.log(`from your repository's ${hookDirDisplay} directory.`);
+    }
+  },
+};
+--- END FILE: lib/commands/hooks.js ---
+
+--- START FILE: lib/commands/react.js ---
+// lib/commands/react.js (Cleaned)
+const {
+  loadState,
+  saveState,
+  getExpToNextLevel,
+  levelingConfig,
+} = require("../state");
+const chalk = require("chalk"); // Keep chalk for regular output
+const moment = require("moment");
+
+// --- Helper Functions ---
+// (awardExp and unlockAchievement functions remain the same - no debug logs added there)
+/**
+ * Awards EXP to the pet and handles level ups.
+ * MUTATES the state object directly.
+ */
+async function awardExp(state, amount, reason) {
+  if (!amount || amount <= 0) return false;
+  const pet = state.globalPet;
+  const levelBefore = pet.level;
+  pet.experience += amount;
+  console.log(
+    chalk.greenBright(`+${amount} EXP`) +
+      chalk.dim(` (${reason})`) +
+      chalk.greenBright(`! | Total EXP: ${pet.experience}`)
+  );
+  let leveledUp = false;
+  let expToNext = getExpToNextLevel(pet.level);
+  while (pet.experience >= expToNext) {
+    pet.level++;
+    const levelExpCost = expToNext;
+    pet.experience -= levelExpCost;
+    leveledUp = true;
+    console.log(
+      chalk.cyanBright.bold(
+        `\n*** LEVEL UP! ${pet.name} reached Level ${pet.level}! ***\n`
+      )
+    );
+    pet.happiness = Math.min(100, (pet.happiness || 50) + 20);
+    pet.hunger = Math.min(100, (pet.hunger || 50) + 10);
+    expToNext = getExpToNextLevel(pet.level);
+  }
+  if (leveledUp) {
+    if (pet.level >= 5)
+      await unlockAchievement(state, "REACH_LEVEL_5", "Reached Level 5");
+    if (pet.level >= 10)
+      await unlockAchievement(state, "REACH_LEVEL_10", "Reached Level 10");
+    console.log(
+      chalk.cyan(
+        ` -> EXP towards Level ${pet.level + 1}: ${
+          pet.experience
+        } / ${expToNext}\n`
+      )
+    );
+  }
+  return leveledUp;
+}
+
+/**
+ * Unlocks an achievement if not already unlocked, awarding bonus EXP.
+ * MUTATES the state object directly.
+ */
+async function unlockAchievement(state, achievementKey, achievementReason) {
+  if (!state.globalPet.achievements) {
+    state.globalPet.achievements = {};
+  }
+  if (!state.globalPet.achievements[achievementKey]) {
+    const reward = levelingConfig.rewards[achievementKey];
+    console.log(
+      chalk.yellowBright.bold(
+        `\n*** Achievement Unlocked: ${achievementReason}! ***\n`
+      )
+    );
+    state.globalPet.achievements[achievementKey] = moment().toISOString();
+    if (reward > 0) {
+      await awardExp(state, reward, `Achievement Bonus: ${achievementReason}`);
+    }
+    return true;
+  }
+  return false;
+}
+
+// --- Main Handler Logic (handleReactCommand - Cleaned) ---
+/**
+ * Processes a Git event triggered by a hook.
+ */
+async function handleReactCommand(event, hookArgs = []) {
+  let state;
+  try {
+    state = await loadState();
+    // Removed debug log
+    if (!state.globalPet.achievements) state.globalPet.achievements = {};
+
+    console.log(
+      chalk.dim(
+        `Reacting to event: ${chalk.magenta(event)} with args: [${hookArgs.join(
+          ", "
+        )}]`
+      )
+    ); // Keep this minimal log
+
+    let expAwarded = 0;
+    let reason = "";
+    let achievementKey = null;
+    let achievementReason = "";
+
+    switch (event) {
+      case "post-commit":
+        const changesMade = hookArgs.includes("changes");
+        // Removed debug log
+        if (changesMade) {
+          // Removed debug log
+          expAwarded = levelingConfig.rewards.COMMIT_WITH_CHANGES;
+          reason = "Commit with Changes";
+          achievementKey = "FIRST_COMMIT";
+          achievementReason = "First Commit!";
+        } else {
+          console.log(
+            chalk.grey(
+              "React: Skipping EXP for commit - hook provided no changes argument."
+            )
+          );
+        }
+        break;
+
+      case "post-merge":
+        const wasConflict = hookArgs.includes("was-conflict");
+        // Removed debug log
+        if (wasConflict) {
+          expAwarded = levelingConfig.rewards.RESOLVE_CONFLICT;
+          reason = "Conflict Resolved (hook indicated)";
+          achievementKey = "FIRST_CONFLICT_RESOLVED";
+          achievementReason = "Resolved First Conflict";
+        } else {
+          expAwarded = levelingConfig.rewards.MERGE_SUCCESS;
+          reason = "Branch Merged";
+          achievementKey = "FIRST_MERGE";
+          achievementReason = "First Merge!";
+        }
+        break;
+      case "pre-push":
+        // Removed debug log
+        expAwarded = levelingConfig.rewards.PUSH_CHANGES;
+        reason = "Push Attempted";
+        break;
+      case "branch-deleted":
+        const wasOld = hookArgs.includes("was-old");
+        const wasMerged = hookArgs.includes("was-merged");
+        // Removed debug log
+        if (wasOld || wasMerged) {
+          expAwarded = levelingConfig.rewards.CLEAN_BRANCH;
+          reason = wasOld
+            ? "Old Branch Cleaned"
+            : wasMerged
+            ? "Merged Branch Cleaned"
+            : "Cleaned Branch";
+        } else {
+          /* skip */
+        }
+        break;
+
+      default:
+        console.warn(
+          chalk.yellow(`React: Unknown event type received: ${event}`)
+        );
+        break;
+    }
+
+    if (expAwarded > 0) {
+      await awardExp(state, expAwarded, reason);
+    }
+    if (achievementKey && achievementReason) {
+      await unlockAchievement(state, achievementKey, achievementReason);
+    }
+  } catch (error) {
+    console.error(
+      chalk.red(
+        `Error processing react event '${event}' with args [${hookArgs.join(
+          ", "
+        )}]:`
+      ),
+      error
+    );
+  } finally {
+    if (state) {
+      await saveState(state);
+    } else {
+      console.error(chalk.red("React: State was not loaded, cannot save."));
+    }
+  }
+}
+
+// --- Yargs Command Definition (Simplified V3 - Cleaned) ---
+module.exports = {
+  command: "react",
+  describe:
+    "Internal command for reacting to Git events (usually called by hooks)",
+  builder: (yargs) => {
+    yargs
+      .strict(false) // Allow any arguments after 'react'
+      .hide("react");
+  },
+  handler: async (argv) => {
+    // Removed debug logs
+    if (argv._.length < 2) {
+      console.error(
+        chalk.red(
+          'React handler Error: No event name provided after "react". Aborting.'
+        )
+      );
+      return;
+    }
+    const event = argv._[1];
+    const hookArgs = argv._.slice(2);
+    // Removed debug logs
+    await handleReactCommand(event, hookArgs);
+  },
+};
+--- END FILE: lib/commands/react.js ---
+
+--- START FILE: lib/pet.js ---
+// lib/pet.js (Complete: determineCurrentMood now returns { mood, reason })
+const moment = require("moment");
+const { loadState, saveState } = require("./state");
+const { getRepoState } = require("./git");
+const chalk = require("chalk");
+
+// --- Constants ---
+const HUNGER_RATE_PER_HOUR = 20;
+const BOREDOM_RATE_PER_HOUR = 15;
+const MIN_DECAY_THRESHOLD_HOURS = 0.005; // ~18 seconds
+const BOREDOM_THRESHOLD_HOURS = 6;
+const OLD_BRANCH_THRESHOLD_WEEKS = 2;
+const OLD_BRANCH_COUNT_THRESHOLD = 2;
+const STRESS_THRESHOLD_HOURS = 1;
+const AHEAD_COUNT_THRESHOLD = 10;
+const BEHIND_COUNT_THRESHOLD = 5;
+const HAPPY_HAPPINESS_THRESHOLD = 85;
+const HAPPY_HUNGER_THRESHOLD = 60;
+const FEED_HUNGER_GAIN = 25;
+const FEED_HAPPINESS_GAIN = 5;
+const PLAY_HAPPINESS_GAIN = 20;
+const PLAY_HUNGER_LOSS = 8;
+const COMMIT_HAPPINESS_GAIN = 15;
+
+// --- Function to Update Pet Stats Based on Time Passing ---
+function updatePetStats(petState) {
+  const now = moment();
+  const timestamps = [petState.lastFed, petState.lastPlayed, petState.createdAt]
+    .filter(Boolean)
+    .map((ts) => moment(ts))
+    .filter((m) => m.isValid());
+
+  const lastKnownActivity =
+    timestamps.length > 0 ? moment.max(timestamps) : null;
+
+  if (!lastKnownActivity) {
+    return;
+  }
+
+  const hoursPassed = now.diff(lastKnownActivity, "hours", true);
+
+  if (hoursPassed > MIN_DECAY_THRESHOLD_HOURS) {
+    // console.log(chalk.cyan(`[DEBUG updatePetStats] Threshold MET (${hoursPassed.toFixed(5)} > ${MIN_DECAY_THRESHOLD_HOURS}). Applying decay.`));
+    const hungerBefore = petState.hunger;
+    const happinessBefore = petState.happiness;
+    const hungerDecayAmount = hoursPassed * HUNGER_RATE_PER_HOUR;
+    const happinessDecayAmount = hoursPassed * BOREDOM_RATE_PER_HOUR;
+
+    petState.hunger = petState.hunger - hungerDecayAmount;
+    petState.happiness = petState.happiness - happinessDecayAmount;
+
+    // console.log(chalk.cyan(`[DEBUG updatePetStats] Calculated Decay: Hunger -${hungerDecayAmount.toFixed(3)}, Happiness -${happinessDecayAmount.toFixed(3)}`));
+
+    petState.hunger = Math.round(Math.min(100, Math.max(0, petState.hunger)));
+    petState.happiness = Math.round(
+      Math.min(100, Math.max(0, petState.happiness))
+    );
+
+    // console.log(chalk.cyan(`[DEBUG updatePetStats] Stats After Decay: Hunger ${hungerBefore} -> ${petState.hunger}, Happiness ${happinessBefore} -> ${petState.happiness}`));
+  }
+  // else { console.log(chalk.yellow(`[DEBUG updatePetStats] Threshold NOT MET (${hoursPassed.toFixed(5)} <= ${MIN_DECAY_THRESHOLD_HOURS}). Skipping decay.`)); }
+}
+
+// --- Main Logic to Determine Pet's Mood ---
+async function determineCurrentMood(state) {
+  const pet = state.globalPet;
+  const repoState = await getRepoState();
+
+  updatePetStats(pet); // Apply decay first
+
+  if (!repoState.isGitRepo) {
+    pet.mood = "confused";
+    pet.repoRootDir = null;
+    return { mood: pet.mood, reason: "not in a git repository" }; // <-- Return object
+  }
+
+  if (!pet.repoRootDir || pet.repoRootDir !== repoState.repoRootDir) {
+    pet.repoRootDir = repoState.repoRootDir;
+  }
+
+  let calculatedMood = "neutral";
+  let moodReason = "default";
+
+  // --- Determine Mood Based on Priority States ---
+  if (repoState.hasConflicts) {
+    calculatedMood = "stressed";
+    moodReason = "merge conflicts detected";
+  } else if (repoState.behindCount > BEHIND_COUNT_THRESHOLD) {
+    calculatedMood = "sad";
+    moodReason = `behind remote by ${repoState.behindCount} commits`;
+    pet.happiness = Math.max(0, pet.happiness - 15);
+  } else if (repoState.aheadCount > AHEAD_COUNT_THRESHOLD) {
+    calculatedMood = "thinking";
+    moodReason = `ahead of remote by ${repoState.aheadCount} commits`;
+  } else if (repoState.hasUncommittedChanges) {
+    if (
+      repoState.lastCommitTimestamp &&
+      moment().diff(moment(repoState.lastCommitTimestamp), "hours") >
+        STRESS_THRESHOLD_HOURS
+    ) {
+      calculatedMood = "stressed";
+      moodReason = "old uncommitted changes";
+    } else {
+      calculatedMood = "thinking";
+      moodReason = "uncommitted changes present";
+    }
+  }
+
+  // --- Needs & Boredom Checks (If no higher priority mood was set) ---
+  if (calculatedMood === "neutral") {
+    if (pet.hunger < 20) {
+      calculatedMood = "sad";
+      moodReason = "hungry";
+    } else if (pet.happiness < 30) {
+      calculatedMood = "bored";
+      moodReason = "low happiness";
+    } else {
+      const oldBranchThreshold = moment().subtract(
+        OLD_BRANCH_THRESHOLD_WEEKS,
+        "weeks"
+      );
+      const oldBranches = repoState.branches.filter(
+        (b) =>
+          b.lastCommit.isBefore(oldBranchThreshold) &&
+          !["main", "master", "develop", "HEAD"].includes(b.name) &&
+          b.name !== repoState.currentBranch
+      );
+      if (oldBranches.length > OLD_BRANCH_COUNT_THRESHOLD) {
+        calculatedMood = "bored";
+        moodReason = `${oldBranches.length} old branches detected`;
+      } else if (
+        repoState.lastCommitTimestamp &&
+        moment().diff(moment(repoState.lastCommitTimestamp), "hours") >
+          BOREDOM_THRESHOLD_HOURS
+      ) {
+        calculatedMood = "bored";
+        moodReason = "no recent commit";
+      } else if (
+        moment().diff(moment(pet.lastPlayed), "hours") >
+        BOREDOM_THRESHOLD_HOURS * 1.5
+      ) {
+        calculatedMood = "bored";
+        moodReason = "not played with recently";
+      }
+    }
+  }
+
+  // --- Event Reaction: New Commit Detected ---
+  let commitBoostApplied = false;
+  if (
+    repoState.lastCommitTimestamp &&
+    repoState.lastCommitTimestamp !== pet.lastCommitTimestamp
+  ) {
+    if (calculatedMood !== "stressed" && calculatedMood !== "sad") {
+      pet.happiness = Math.min(100, pet.happiness + COMMIT_HAPPINESS_GAIN);
+      commitBoostApplied = true;
+    }
+    pet.lastCommitTimestamp = repoState.lastCommitTimestamp;
+  }
+
+  // --- Happiness Check (Final Check) ---
+  if (calculatedMood === "neutral" || calculatedMood === "bored") {
+    if (
+      pet.happiness > HAPPY_HAPPINESS_THRESHOLD &&
+      pet.hunger > HAPPY_HUNGER_THRESHOLD
+    ) {
+      calculatedMood = "happy";
+      moodReason = "needs met (high stats)";
+    }
+  }
+  if (
+    commitBoostApplied &&
+    calculatedMood !== "stressed" &&
+    calculatedMood !== "sad"
+  ) {
+    calculatedMood = "happy";
+    moodReason = "new commit detected"; // Reason priority for commit
+  }
+
+  // --- Final Mood Assignment in state ---
+  pet.mood = calculatedMood;
+
+  // --- RETURN MOOD AND REASON ---
+  return { mood: calculatedMood, reason: moodReason }; // <-- Changed Return Value
+}
+
+// --- Export Functions ---
+module.exports = { determineCurrentMood, updatePetStats };
+--- END FILE: lib/pet.js ---
+
+--- START FILE: lib/state.js ---
+// lib/state.js
+const fs = require('fs-extra');
+const path = require('path');
+const os = require('os');
+const moment = require('moment');
+const chalk = require('chalk'); // Keep chalk for potential logging
+
+const configDir = path.join(os.homedir(), '.config', 'git-pet');
+const stateFile = path.join(configDir, 'state.json');
+
+// --- Default State Structure ---
+const defaultGlobalPetState = {
+    name: 'Git Pet',
+    mood: 'neutral',
+    hunger: 50,
+    happiness: 50,
+    lastFed: null, // Start as null, update on first feed
+    lastPlayed: null, // Start as null, update on first play
+    lastCommitTimestamp: null, // Track last known commit time from repo state
+    createdAt: moment().toISOString(),
+    lastMood: 'neutral', // Track previous mood for animation resets
+    animationFrame: 0, // Current frame index for animation
+    lastStatusUpdate: moment().toISOString(), // Track last time status was checked (for animation timing)
+    repoRootDir: null, // Track associated repo root (simplistic global pet tracking)
+
+    // --- NEW Leveling/Achievement Fields ---
+    level: 1,
+    experience: 0,
+    achievements: {} // Store unlocked achievements: { "FIRST_COMMIT": timestamp, ... }
+};
+
+const defaultState = {
+  globalPet: { ...defaultGlobalPetState }, // Use a copy
+  config: { // Separate config object
+    checkRemoteStatus: false // Default to FALSE
+  }
+};
+
+// --- Leveling Configuration ---
+// Can be moved to a separate config file later if it grows large
+const levelingConfig = {
+    expPerLevelBase: 100,
+    expPerLevelIncrement: 50, // EXP needed = base + (increment * (currentLevel - 1))
+
+    // EXP Rewards - Keys MUST match achievement keys and react event logic
+    rewards: {
+        // --- Actions (Awarded via react.js based on events) ---
+        COMMIT_WITH_CHANGES: 10,
+        MERGE_SUCCESS: 25,
+        RESOLVE_CONFLICT: 50,
+        PUSH_CHANGES: 5,        // Awarded for pre-push/post-push event
+        CLEAN_BRANCH: 15,       // Awarded for branch-deleted event (if hook passes flag)
+
+        // --- Achievements (Bonus EXP - Awarded ONCE via unlockAchievement in react.js) ---
+        // Keys match achievement unlock keys
+        FIRST_COMMIT: 50,
+        FIRST_MERGE: 75,
+        FIRST_CONFLICT_RESOLVED: 100,
+        REACH_LEVEL_5: 150, // Example future achievement
+        REACH_LEVEL_10: 300,
+        // Add more achievement keys and their bonus EXP rewards here
+    }
+};
+
+/**
+ * Calculates the total EXP required to reach the *next* level.
+ * @param {number} currentLevel - The pet's current level.
+ * @returns {number} The total EXP needed for the next level up.
+ */
+function getExpToNextLevel(currentLevel) {
+    if (currentLevel < 1) return levelingConfig.expPerLevelBase; // Safety check
+    // Formula: Base + Increment * (Level - 1)
+    return levelingConfig.expPerLevelBase + (levelingConfig.expPerLevelIncrement * (currentLevel - 1));
+}
+
+/**
+ * Ensures the config directory and state file exist. Creates default if not found.
+ */
+async function ensureStateFile() {
+  try {
+    await fs.ensureDir(configDir);
+    if (!(await fs.pathExists(stateFile))) {
+      await fs.writeJson(stateFile, defaultState, { spaces: 2 });
+      // console.log(chalk.dim(`Initialized default state file at: ${stateFile}`));
+    }
+  } catch (error) {
+    console.error(chalk.red(`Error ensuring state file exists at ${configDir}:`), error);
+    // Consider re-throwing or exiting if this fails critically
+  }
+}
+
+/**
+ * Loads the current state from the JSON file. Returns default state on error or ensures defaults exist.
+ * Merges loaded state with defaults to handle potentially missing fields in older state files.
+ * @returns {Promise<object>} The loaded and potentially migrated state object.
+ */
+async function loadState() {
+  await ensureStateFile(); // Make sure file/dir exists before reading
+  try {
+    let loadedState = {};
+    // Check if file exists before reading, handle potential empty file case
+    if (await fs.pathExists(stateFile)) {
+       try {
+         // Read the file content first
+         const fileContent = await fs.readFile(stateFile, 'utf-8');
+         // Handle empty file case gracefully
+         if (!fileContent.trim()) {
+             console.warn(chalk.yellow(`State file ${stateFile} was empty. Initializing with defaults.`));
+             loadedState = {}; // Treat as empty, defaults will merge
+         } else {
+             loadedState = JSON.parse(fileContent); // Parse non-empty content
+         }
+       } catch (readError) {
+          // Handle case where file exists but is corrupted JSON
+          console.error(chalk.red(`Error reading or parsing state file ${stateFile}. Check for corruption. Using defaults:`), readError);
+          // Return a deep copy of defaults to avoid modifying the original
+          return JSON.parse(JSON.stringify(defaultState));
+       }
+    } else {
+        // File didn't exist, ensureStateFile should have created it with defaults
+        // but if not, start fresh
+        console.warn(chalk.yellow(`State file ${stateFile} not found after check. Initializing with defaults.`));
+        loadedState = {};
+    }
+
+    // --- Merge loaded state with defaults to ensure all keys exist ---
+    // Create deep copies to avoid modifying the original defaultState objects
+    const finalState = {
+        globalPet: { ...defaultGlobalPetState, ...(loadedState.globalPet || {}) },
+        config: { ...defaultState.config, ...(loadedState.config || {}) },
+    };
+
+    // Explicitly ensure nested 'achievements' object exists
+    if (typeof finalState.globalPet.achievements !== 'object' || finalState.globalPet.achievements === null) {
+        finalState.globalPet.achievements = {};
+    }
+    // Ensure level and experience are numbers (might be undefined if loading very old state)
+    if (typeof finalState.globalPet.level !== 'number') {
+       finalState.globalPet.level = defaultGlobalPetState.level;
+    }
+    if (typeof finalState.globalPet.experience !== 'number') {
+       finalState.globalPet.experience = defaultGlobalPetState.experience;
+    }
+
+    return finalState;
+
+  } catch (error) {
+    console.error(chalk.red('Critical error during state load/migration, using defaults:'), error);
+    // Return a deep copy of defaultState to avoid accidental modification
+    return JSON.parse(JSON.stringify(defaultState));
+  }
+}
+
+/**
+ * Saves the provided state object back to the JSON file.
+ * @param {object} newState - The state object to save.
+ */
+async function saveState(newState) {
+  await ensureStateFile(); // Ensure directory exists
+  try {
+    // Basic validation before saving
+    if (!newState || !newState.globalPet || !newState.config || typeof newState.globalPet.achievements !== 'object') {
+       console.error(chalk.red('Attempted to save invalid or incomplete state structure. Aborting save. State was:'), newState);
+       return; // Prevent saving bad state
+    }
+    // Ensure required fields are numbers before saving
+    newState.globalPet.level = Number(newState.globalPet.level) || 1;
+    newState.globalPet.experience = Number(newState.globalPet.experience) || 0;
+
+    await fs.writeJson(stateFile, newState, { spaces: 2 });
+  } catch (error) {
+    console.error(chalk.red('Error saving state file:'), error);
+  }
+}
+
+// Export state functions and leveling helpers
+module.exports = { loadState, saveState, getExpToNextLevel, levelingConfig, defaultState };
+--- END FILE: lib/state.js ---
+
+--- START FILE: lib/art.js ---
+// lib/art.js (Revised Concept)
+const chalk = require('chalk');
+
+// --- Base Structure (Maybe make simpler?) ---
+const basePetLines = [
+  '  .--.  ',
+  ' / .. \\ ', // Eyes line (index 1)
+  ' \\ ## / ', // Mouth/Nose line (index 2)
+  ' /\\__/\\ ',
+  '(_\\** /_) ', // Body/Paws line (index 4)
+  '  "  "  '
+];
+const eyesIndex = 1;
+const mouthIndex = 2;
+const bodyIndex = 4; // Example if paws change
+
+// --- Mood Definitions with Frames ---
+const moods = {
+  // Simple static mood
+  neutral: {
+    color: chalk.white,
+    frames: [ // Only one frame needed
+      { eyes: ' .. ', mouth: ' ## ' }
+    ],
+    extras: [],
+  },
+
+  // Animated mood
+  happy: {
+    color: chalk.greenBright,
+    frames: [
+      { eyes: ' ^.^', mouth: ' \\_/ ' }, // Frame 1: Happy eyes, smile
+      { eyes: ' ^.^', mouth: ' \\_/ ', body: '(**)' }, // Frame 1 variation: Wiggle paws?
+      { eyes: ' ^u^', mouth: ' \\_/ ' }, // Frame 2: Even happier eyes
+    ],
+    extras: ['✨'], // Add optional static extras
+    interval: 500 // Suggested ms between frames (for future advanced use)
+  },
+
+  bored: {
+      color: chalk.gray,
+      frames: [
+          { eyes: ' -.-', mouth: ' -- '},         // Frame 1: Sleepy
+          { eyes: ' -.-', mouth: ' -- ', extras: [' Z'] }, // Frame 2: Z
+          { eyes: ' o.-', mouth: ' -- '},         // Frame 3: One eye open briefly
+          { eyes: ' -.-', mouth: ' -- ', extras: [' Zz'] },// Frame 4: Zz
+      ],
+      extras: [],
+      interval: 800
+  },
+
+  stressed: {
+    color: chalk.yellow,
+    frames: [
+      { eyes: ' O.O', mouth: ' ww ' },        // Frame 1: Wide eyes
+      { eyes: ' O.O', mouth: ' ww ', extras: ['⚡️'] }, // Frame 2: Add sweat/zap
+      { eyes: ' >.<', mouth: ' MmM' },        // Frame 3: Scrunched eyes
+      { eyes: ' >.<', mouth: ' MmM', extras: ['!!'] }, // Frame 4: Emphasis
+    ],
+    extras: [],
+    interval: 400
+  },
+
+  thinking: { // New mood example
+      color: chalk.cyan,
+      frames: [
+          { eyes: ' .o.', mouth: ' __ '},
+          { eyes: ' o.o', mouth: ' __ '},
+          { eyes: ' o.o', mouth: ' __ ', extras: ['...'] }
+      ],
+      extras: [],
+      interval: 700
+  },
+
+   sad: { // Updated Sad
+       color: chalk.blue,
+       frames: [
+           { eyes: ' v.v', mouth: ' ~~ ' }, // Downturned eyes
+           { eyes: ' T.T', mouth: ' ~~ ' }, // Crying eyes
+       ],
+       extras: ['💧'],
+       interval: 1000
+   }
+
+  // Add more moods: hungry, sick, confused, celebrating, pushing, pulling etc.
+};
+
+// --- Function to Generate Art ---
+function getPetArt(moodKey = 'neutral', name = 'Git Pet', frameIndex = 0) {
+  const moodData = moods[moodKey] || moods.neutral;
+  const safeFrameIndex = frameIndex % moodData.frames.length; // Cycle through frames
+  const frame = moodData.frames[safeFrameIndex];
+
+  let petArt = [...basePetLines]; // Start with base
+
+  // Apply frame modifications
+  if (frame.eyes) petArt[eyesIndex] = petArt[eyesIndex].replace(' .. ', frame.eyes);
+  if (frame.mouth) petArt[mouthIndex] = petArt[mouthIndex].replace(' ## ', frame.mouth);
+  if (frame.body) petArt[bodyIndex] = petArt[bodyIndex].replace('\\** /', frame.body);
+  // Add more replaceable parts if needed
+
+  // Apply color
+  petArt = petArt.map(line => moodData.color(line));
+
+  // Add title and extras
+  const title = chalk.bold(`--- ${name} (${moodKey}) ---`);
+  const currentExtras = [...(moodData.extras || []), ...(frame.extras || [])]; // Combine mood and frame extras
+  const extrasLines = currentExtras.map(e => moodData.color(e));
+
+
+  return [title, ...petArt, ...extrasLines].join('\n');
+}
+
+function getMoodFrameCount(moodKey = 'neutral') {
+    return (moods[moodKey] || moods.neutral).frames.length;
+}
+
+module.exports = { getPetArt, getMoodFrameCount }; // Export frame count getter
+--- END FILE: lib/art.js ---
+
